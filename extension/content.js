@@ -8,15 +8,12 @@
 
   let gameVisible = false;
   let container = null;
+  let _gameApi = null; // closure-scoped game API — never exposed on window
+  let _gameApiBtns = null; // button positions for finished screen clicks
   let streamStartTime = 0;
   let streamingDetected = false;
-  let codeDetected = false;
-  let responseLength = 0;
   let checkInterval = null;
   let hideTimeout = null;
-  let isDragging = false;
-  let dragOffset = { x: 0, y: 0 };
-  let gameInstance = null;
 
   const STREAM_DELAY_MS = 5000;       // 5s of ANY streaming = trigger
   const HIDE_DELAY_MS = 5000;
@@ -145,7 +142,7 @@
     // Force clean any stale container
     const stale = document.getElementById('runlaid-container');
     if (stale) { stale.remove(); container = null; }
-    window._runlaid = null;
+    _gameApi = null;
     
     createOverlay();
     gameVisible = true;
@@ -155,7 +152,7 @@
     launchGame();
 
     setTimeout(() => {
-      if (window._runlaid) window._runlaid.start();
+      if (_gameApi) _gameApi.start();
     }, 500);
   }
 
@@ -170,7 +167,7 @@
       setTimeout(() => {
         if (container) { container.remove(); container = null; }
         gameVisible = false;
-        window._runlaid = null;
+        _gameApi = null;
       }, 400);
     } else {
       // Let finish screen show, then fade
@@ -179,7 +176,7 @@
         setTimeout(() => {
           if (container) { container.remove(); container = null; }
           gameVisible = false;
-          window._runlaid = null;
+          _gameApi = null;
         }, 500);
       }, 4000); // 4s to read the summary
     }
@@ -188,25 +185,6 @@
   // ── DOM Detection ──
   function isStreaming() {
     return !!document.querySelector('[data-is-streaming="true"]');
-  }
-
-  function hasCodeBlocks() {
-    const el = document.querySelector('[data-is-streaming]');
-    if (!el) return false;
-    // Check for actual code elements OR collapsed code containers (buttons, expandable sections)
-    return el.querySelectorAll('pre, code, [class*="code"], [class*="Code"], button[class*="copy"]').length > 0;
-  }
-
-  function getResponseLength() {
-    const el = document.querySelector('[data-is-streaming]');
-    return el ? (el.textContent || '').length : 0;
-  }
-
-  // Also check if Claude is actively "thinking" or using tools
-  function isWorking() {
-    return !!document.querySelector('[data-is-streaming="true"]') ||
-           !!document.querySelector('[class*="thinking"]') ||
-           !!document.querySelector('[class*="Thinking"]');
   }
 
   // ── Main loop ──
@@ -236,7 +214,7 @@
           progressFeedInterval = setInterval(() => {
             if (!gameVisible || !streamingDetected) { clearInterval(progressFeedInterval); return; }
             feedProg = Math.min(65, feedProg + 0.3);
-            if (window._runlaid) window._runlaid.setProgress(feedProg);
+            if (_gameApi) _gameApi.setProgress(feedProg);
           }, 300);
         }
       }
@@ -248,12 +226,10 @@
 
         if (gameVisible) {
           // Push progress to 100 — triggers finish line rush
-          if (window._runlaid) window._runlaid.setProgress(100);
+          if (_gameApi) _gameApi.setProgress(100);
           // Wait for finish line animation + summary screen, then hide
           hideTimeout = setTimeout(() => { hideGame(false); }, 5000);
         }
-        codeDetected = false;
-        responseLength = 0;
       }
     }, 500);
   }
@@ -408,8 +384,8 @@
         return;
       }
 
-      if(state==='FINISHED'&&window._runlaidBtns){
-        const b=window._runlaidBtns;
+      if(state==='FINISHED'&&_gameApiBtns){
+        const b=_gameApiBtns;
         if(my>=b.btnY&&my<=b.btnY+b.btnH){
           // Twitter/X share
           if(mx>=b.twBtnX&&mx<b.twBtnX+b.btnW){
@@ -1001,7 +977,7 @@
         ctx.textAlign='left';
 
         // Store button positions for click handler
-        window._runlaidBtns={twBtnX,pngBtnX,btnW,btnH,btnY};
+        _gameApiBtns={twBtnX,pngBtnX,btnW,btnH,btnY};
       }
 
       ctx.globalAlpha=.02;for(let y=0;y<H;y+=3){ctx.fillStyle='#000';ctx.fillRect(0,y,W,1)}ctx.globalAlpha=1;
@@ -1104,17 +1080,17 @@
         link.download='runlaid-result.png';
         link.href=card.toDataURL('image/png');
         link.click();
-      }catch(e){}
-      // Open Twitter intent
+      }catch(e){console.warn('[RUNLAID] PNG generation failed:',e.message)}
+      // Open Twitter intent — hardcoded domain, noopener for security
       const url='https://x.com/intent/tweet?text='+encodeURIComponent(text);
-      window.open(url,'_blank');
+      window.open(url,'_blank','noopener,noreferrer');
     }
 
-    // ═══ API ═══
-    window._runlaid={
+    // ═══ API (closure-scoped, never exposed on window) ═══
+    _gameApi={
       start:function(){state='INTRO';fr=0;score=0;tugAI=50;tugHuman=50;prog=0;zone=0;side=null;introT=0;invT=0;trT=0;overT=0;frzT=0;magT=0;playerIdx=-1;initScene()},
       setProgress:function(v){if(state==='PLAYING'||state==='CHOOSE')prog=Math.min(100,Math.max(prog,v))},
-      getState:function(){return{state,score,prog,tugAI,tugHuman,side}}
+      getState:function(){return{state,score,prog}}
     };
 
     function loop(){if(!document.getElementById('runlaid-c'))return;update();draw();requestAnimationFrame(loop)}
