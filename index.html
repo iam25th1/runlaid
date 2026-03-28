@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RUNLAID.exe — The Great Displacement</title>
+<meta name="description" content="A satirical mini-game that auto-plays while Claude works. AI vs Humans. Pick a side.">
+<meta property="og:title" content="RUNLAID.exe — The Great Displacement">
+<meta property="og:description" content="A satirical mini-game Chrome extension. AI agents invade your workplace while Claude codes.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:creator" content="@25thprmr">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07060D;--bg2:#0F0D1A;--srf:#1E1C30;--brd:#21262d;
+  --ai:#D85A30;--aiGlow:#FF8855;
+  --hum:#4A90D9;--humGlow:#6AB0FF;
+  --acc:#7C50FF;--accGlow:#A47CFF;
+  --cyan:#50C8FF;--grn:#39E07A;--amb:#E8A000;--red:#E24B4A;--gold:#FFD700;
+  --text:#E8E4F0;--muted:#6A6580;--dim:#3A3550;
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;overflow-x:hidden}
+
+/* ═══ SCANLINE OVERLAY ═══ */
+body::after{
+  content:'';position:fixed;top:0;left:0;width:100%;height:100%;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);
+  pointer-events:none;z-index:9999;
+}
+
+/* ═══ GRID BACKGROUND ═══ */
+.grid-bg{
+  position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;
+  background-image:
+    linear-gradient(rgba(124,80,255,.02) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(124,80,255,.02) 1px,transparent 1px);
+  background-size:60px 60px;
+  animation:gridShift 20s linear infinite;
+}
+@keyframes gridShift{0%{background-position:0 0}100%{background-position:60px 60px}}
+
+/* ═══ NOISE GRAIN ═══ */
+.noise{
+  position:fixed;top:-50%;left:-50%;width:200%;height:200%;z-index:1;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  pointer-events:none;opacity:.4;
+}
+
+/* ═══ SECTION BASE ═══ */
+section{position:relative;z-index:2}
+
+/* ═══ HERO ═══ */
+.hero{
+  min-height:100vh;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;text-align:center;
+  position:relative;overflow:hidden;
+}
+.hero-glow{
+  position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,var(--acc) 0%,transparent 70%);
+  opacity:.06;filter:blur(80px);top:50%;left:50%;
+  transform:translate(-50%,-50%);animation:pulseGlow 4s ease-in-out infinite;
+}
+.hero-glow-2{
+  position:absolute;width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,var(--ai) 0%,transparent 70%);
+  opacity:.04;filter:blur(60px);top:30%;left:30%;
+  animation:driftGlow 8s ease-in-out infinite;
+}
+@keyframes pulseGlow{0%,100%{opacity:.06;transform:translate(-50%,-50%) scale(1)}50%{opacity:.1;transform:translate(-50%,-50%) scale(1.15)}}
+@keyframes driftGlow{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+
+.hero-label{
+  font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:2rem;
+  animation:fadeSlideUp .8s ease both;
+}
+.hero-label span{color:var(--acc)}
+
+.hero-title{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(3.5rem,10vw,8rem);line-height:.9;
+  position:relative;animation:fadeSlideUp .8s ease .1s both;
+}
+.hero-title .main{
+  display:block;
+  background:linear-gradient(135deg,#fff 0%,#C8B8FF 50%,var(--acc) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-title .exe{
+  font-family:'JetBrains Mono',monospace;font-size:.3em;
+  color:var(--acc);vertical-align:super;
+  animation:blink 1.5s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+
+.hero-sub{
+  font-family:'Syne',sans-serif;font-weight:600;
+  font-size:clamp(1rem,2.5vw,1.4rem);color:var(--muted);
+  margin-top:1.5rem;letter-spacing:.05em;
+  animation:fadeSlideUp .8s ease .25s both;
+}
+
+.hero-tagline{
+  font-size:.85rem;color:var(--dim);margin-top:1rem;
+  max-width:500px;line-height:1.6;
+  animation:fadeSlideUp .8s ease .4s both;
+}
+
+@keyframes fadeSlideUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ═══ CTA BUTTONS ═══ */
+.cta-group{
+  display:flex;gap:1rem;margin-top:2.5rem;flex-wrap:wrap;justify-content:center;
+  animation:fadeSlideUp .8s ease .55s both;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:.6rem;
+  padding:.85rem 2rem;border-radius:8px;font-family:'JetBrains Mono',monospace;
+  font-size:.85rem;font-weight:600;text-decoration:none;
+  transition:all .25s ease;cursor:pointer;border:none;position:relative;overflow:hidden;
+}
+.btn-primary{
+  background:var(--acc);color:#fff;
+  box-shadow:0 0 30px rgba(124,80,255,.3),inset 0 1px 0 rgba(255,255,255,.1);
+}
+.btn-primary:hover{
+  background:#8A60FF;transform:translateY(-2px);
+  box-shadow:0 0 50px rgba(124,80,255,.5),inset 0 1px 0 rgba(255,255,255,.15);
+}
+.btn-secondary{
+  background:transparent;color:var(--text);
+  border:1px solid var(--dim);
+}
+.btn-secondary:hover{
+  border-color:var(--acc);color:var(--acc);transform:translateY(-2px);
+}
+.btn::after{
+  content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);
+  transition:left .5s ease;
+}
+.btn:hover::after{left:100%}
+
+/* ═══ HERO BATTLE SCENE ═══ */
+.battle-canvas{
+  margin-top:3rem;width:min(90vw,700px);height:200px;
+  border-radius:12px;overflow:hidden;
+  border:1px solid rgba(124,80,255,.12);
+  box-shadow:0 20px 80px rgba(0,0,0,.5),0 0 1px rgba(124,80,255,.15);
+  animation:fadeSlideUp .8s ease .7s both;
+}
+
+/* ═══ SCROLL INDICATOR ═══ */
+.scroll-hint{
+  position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+  color:var(--dim);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;
+  animation:bobDown 2s ease-in-out infinite;
+}
+.scroll-hint::after{
+  content:'↓';display:block;text-align:center;margin-top:.5rem;
+  font-size:1.2rem;color:var(--acc);
+}
+@keyframes bobDown{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
+
+/* ═══ FEATURES ═══ */
+.features{
+  padding:8rem 2rem;max-width:1100px;margin:0 auto;
+}
+.section-label{
+  font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;
+  color:var(--acc);margin-bottom:1rem;
+}
+.section-title{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(2rem,5vw,3.5rem);line-height:1.1;
+  margin-bottom:4rem;max-width:600px;
+}
+
+.feature-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:2rem;
+}
+.feature-card{
+  background:var(--bg2);border:1px solid var(--brd);border-radius:12px;
+  padding:2rem;position:relative;overflow:hidden;
+  transition:all .35s ease;
+}
+.feature-card:hover{
+  border-color:var(--acc);transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(124,80,255,.08);
+}
+.feature-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--acc),transparent);
+  opacity:0;transition:opacity .35s;
+}
+.feature-card:hover::before{opacity:1}
+.feature-icon{
+  font-size:2rem;margin-bottom:1rem;display:block;
+}
+.feature-card h3{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:1.15rem;
+  margin-bottom:.75rem;
+}
+.feature-card p{
+  font-size:.8rem;color:var(--muted);line-height:1.7;
+}
+
+/* ═══ HOW IT WORKS ═══ */
+.how-it-works{
+  padding:6rem 2rem;background:var(--bg2);
+  border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);
+}
+.how-inner{max-width:900px;margin:0 auto}
+.steps{
+  display:flex;flex-direction:column;gap:0;margin-top:3rem;
+}
+.step{
+  display:flex;gap:2rem;align-items:flex-start;position:relative;
+  padding:2rem 0;
+}
+.step-num{
+  flex-shrink:0;width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;
+  position:relative;z-index:1;
+}
+.step:nth-child(1) .step-num{background:var(--ai);color:#fff}
+.step:nth-child(2) .step-num{background:var(--hum);color:#fff}
+.step:nth-child(3) .step-num{background:var(--acc);color:#fff}
+.step:nth-child(4) .step-num{background:var(--grn);color:#0a0a0a}
+.step:nth-child(5) .step-num{background:var(--amb);color:#0a0a0a}
+
+.step-line{
+  position:absolute;left:23px;top:70px;bottom:-10px;width:2px;
+  background:linear-gradient(to bottom,var(--brd),transparent);
+}
+.step:last-child .step-line{display:none}
+
+.step-content h3{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:1.1rem;
+  margin-bottom:.5rem;
+}
+.step-content p{
+  font-size:.8rem;color:var(--muted);line-height:1.7;max-width:500px;
+}
+
+/* ═══ SIDES ═══ */
+.sides{
+  padding:8rem 2rem;max-width:1000px;margin:0 auto;text-align:center;
+}
+.sides-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3rem;
+}
+.side-card{
+  border-radius:12px;padding:2.5rem 1.5rem;position:relative;
+  overflow:hidden;transition:all .35s ease;cursor:default;
+}
+.side-ai{background:linear-gradient(135deg,rgba(216,90,48,.08),rgba(216,90,48,.02));border:1px solid rgba(216,90,48,.2)}
+.side-ai:hover{border-color:var(--ai);box-shadow:0 0 40px rgba(216,90,48,.1)}
+.side-human{background:linear-gradient(135deg,rgba(74,144,217,.08),rgba(74,144,217,.02));border:1px solid rgba(74,144,217,.2)}
+.side-human:hover{border-color:var(--hum);box-shadow:0 0 40px rgba(74,144,217,.1)}
+.side-observe{background:linear-gradient(135deg,rgba(255,255,255,.03),rgba(255,255,255,.01));border:1px solid var(--brd)}
+.side-observe:hover{border-color:var(--muted);box-shadow:0 0 40px rgba(255,255,255,.03)}
+
+.side-card .side-icon{font-size:2.5rem;margin-bottom:1rem}
+.side-card h3{font-family:'Syne',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:.75rem}
+.side-card p{font-size:.78rem;color:var(--muted);line-height:1.7}
+
+/* ═══ ZONES SHOWCASE ═══ */
+.zones{
+  padding:6rem 2rem;background:var(--bg2);
+  border-top:1px solid var(--brd);border-bottom:1px solid var(--brd);
+}
+.zones-inner{max-width:1000px;margin:0 auto}
+.zone-strip{
+  display:flex;gap:0;margin-top:3rem;border-radius:12px;overflow:hidden;
+  border:1px solid var(--brd);
+}
+.zone-block{
+  flex:1;padding:2rem 1.2rem;text-align:center;
+  transition:all .35s ease;position:relative;cursor:default;
+}
+.zone-block:hover{flex:1.5}
+.zone-block::after{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  opacity:.6;
+}
+.zone-block:nth-child(1){background:#0d1117}.zone-block:nth-child(1)::after{background:#3fb950}
+.zone-block:nth-child(2){background:#1a1200}.zone-block:nth-child(2)::after{background:#E8A000}
+.zone-block:nth-child(3){background:#0a0a0a}.zone-block:nth-child(3)::after{background:#E24B4A}
+.zone-block:nth-child(4){background:#1a0008}.zone-block:nth-child(4)::after{background:#FFD700}
+.zone-block:nth-child(5){background:#040d04}.zone-block:nth-child(5)::after{background:#E8A000}
+
+.zone-block h4{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:.85rem;
+  margin-bottom:.5rem;white-space:nowrap;
+}
+.zone-block p{font-size:.65rem;color:var(--muted);line-height:1.5}
+
+/* ═══ CTA SECTION ═══ */
+.final-cta{
+  padding:8rem 2rem;text-align:center;position:relative;overflow:hidden;
+}
+.final-cta .hero-glow{opacity:.04}
+.final-cta h2{
+  font-family:'Syne',sans-serif;font-weight:800;
+  font-size:clamp(2rem,5vw,3.5rem);margin-bottom:1rem;
+}
+.final-cta p{color:var(--muted);font-size:.9rem;margin-bottom:2.5rem;max-width:500px;margin-left:auto;margin-right:auto}
+
+/* ═══ FOOTER ═══ */
+footer{
+  padding:3rem 2rem;border-top:1px solid var(--brd);
+  text-align:center;
+}
+footer .logo{
+  font-family:'Syne',sans-serif;font-weight:800;font-size:1.2rem;
+  margin-bottom:.5rem;
+}
+footer .logo span{color:var(--acc)}
+footer p{font-size:.7rem;color:var(--dim)}
+footer a{color:var(--acc);text-decoration:none}
+footer a:hover{text-decoration:underline}
+
+/* ═══ RESPONSIVE ═══ */
+@media(max-width:768px){
+  .sides-grid{grid-template-columns:1fr}
+  .zone-strip{flex-direction:column}
+  .zone-block:hover{flex:1}
+  .step{gap:1rem}
+}
+
+/* ═══ REVEAL ANIMATION ═══ */
+.reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+/* ═══ GLITCH TEXT ═══ */
+.glitch{position:relative;display:inline-block}
+.glitch::before,.glitch::after{
+  content:attr(data-text);position:absolute;top:0;left:0;width:100%;height:100%;
+}
+.glitch::before{
+  animation:glitchTop 3s infinite;clip-path:polygon(0 0,100% 0,100% 33%,0 33%);
+  -webkit-text-fill-color:var(--ai);opacity:.8;
+}
+.glitch::after{
+  animation:glitchBottom 2.5s infinite;clip-path:polygon(0 67%,100% 67%,100% 100%,0 100%);
+  -webkit-text-fill-color:var(--hum);opacity:.8;
+}
+@keyframes glitchTop{
+  0%,90%,100%{transform:translate(0)}92%{transform:translate(-3px,-1px)}94%{transform:translate(3px,1px)}
+  96%{transform:translate(-2px)}98%{transform:translate(1px,-1px)}
+}
+@keyframes glitchBottom{
+  0%,88%,100%{transform:translate(0)}90%{transform:translate(2px,1px)}93%{transform:translate(-3px)}
+  95%{transform:translate(1px,-1px)}97%{transform:translate(-1px,2px)}
+}
+
+/* ═══ FLOATING PARTICLES ═══ */
+.particle{
+  position:absolute;border-radius:50%;pointer-events:none;
+  animation:floatUp linear infinite;
+}
+@keyframes floatUp{
+  0%{transform:translateY(0) scale(1);opacity:.4}
+  50%{opacity:.2}
+  100%{transform:translateY(-100vh) scale(0);opacity:0}
+}
+</style>
+</head>
+<body>
+
+<div class="grid-bg"></div>
+<div class="noise"></div>
+
+<!-- ═══ HERO ═══ -->
+<section class="hero" id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow-2"></div>
+  
+  <div class="hero-label">Chrome Extension <span>•</span> Free <span>•</span> Open Source</div>
+  
+  <h1 class="hero-title">
+    <span class="main glitch" data-text="RUNLAID">RUNLAID</span><span class="exe">.exe</span>
+  </h1>
+  
+  <p class="hero-sub">The Great Displacement</p>
+  <p class="hero-tagline">A satirical mini-game that auto-plays on claude.ai while Claude works. AI agents invade your workplace. Pick a side. Fight for the future.</p>
+  
+  <div class="cta-group">
+    <a href="#download" class="btn btn-primary">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Install Extension
+    </a>
+    <a href="https://github.com/iam25th1/runlaid" class="btn btn-secondary" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      View Source
+    </a>
+  </div>
+
+  <canvas id="heroCanvas" class="battle-canvas"></canvas>
+  
+  <div class="scroll-hint">See how it works</div>
+</section>
+
+<!-- ═══ FEATURES ═══ -->
+<section class="features reveal" id="features">
+  <div class="section-label">Why You Need This</div>
+  <h2 class="section-title">Entertainment for the idle minutes.</h2>
+  
+  <div class="feature-grid">
+    <div class="feature-card reveal">
+      <span class="feature-icon">⚡</span>
+      <h3>Auto-Triggers</h3>
+      <p>Detects when Claude is writing long responses. 5 seconds of streaming and the game launches automatically. Zero config.</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-icon">⚔️</span>
+      <h3>3v3 Turf War</h3>
+      <p>AI agents vs human workers in a click-based workplace battle. Items spawn on desks, both sides race to collect. You join the fight or just watch.</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-icon">🎯</span>
+      <h3>Pick Your Side</h3>
+      <p>Join as AI Agent, fight as a Human Worker, or just Observe. Take control of an existing character with boosted speed and a glowing aura.</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-icon">🗺️</span>
+      <h3>5 Workplace Zones</h3>
+      <p>Tech Office, Design Studio, Newsroom, Film Set, Trading Floor. Each with unique items, furniture, and floor details. Zones shift as the task progresses.</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-icon">📈</span>
+      <h3>Progressive Difficulty</h3>
+      <p>AI gets 25% faster per zone. By Wall Street, they're twice as fast with near-instant reactions. Can you keep up?</p>
+    </div>
+    <div class="feature-card reveal">
+      <span class="feature-icon">🐦</span>
+      <h3>Share Results</h3>
+      <p>Download a PNG result card or share directly to X/Twitter. Show the world who won the turf war while Claude coded.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ HOW IT WORKS ═══ -->
+<section class="how-it-works reveal" id="how">
+  <div class="how-inner">
+    <div class="section-label">The Flow</div>
+    <h2 class="section-title">Five steps to displacement.</h2>
+    
+    <div class="steps">
+      <div class="step reveal">
+        <div class="step-num">1</div>
+        <div class="step-line"></div>
+        <div class="step-content">
+          <h3>Workers Producing</h3>
+          <p>Human workers appear at desks. They're typing, designing, writing. Work items spawn on surfaces. Business as usual.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">2</div>
+        <div class="step-line"></div>
+        <div class="step-content">
+          <h3>AI Agents Incoming</h3>
+          <p>Three Claude agents march in from the right. The humans react with surprise. The invasion has begun.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">3</div>
+        <div class="step-line"></div>
+        <div class="step-content">
+          <h3>Choose Your Side</h3>
+          <p>"THE DISPLACEMENT HAS BEGUN" — Join as AI, fight as Human, or simply Observe the chaos unfold.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">4</div>
+        <div class="step-line"></div>
+        <div class="step-content">
+          <h3>The Turf War</h3>
+          <p>Click items to collect. Walk your character across the scene. Grab power-ups. Race the opposing team. The tug-of-war bar shifts with every grab.</p>
+        </div>
+      </div>
+      <div class="step reveal">
+        <div class="step-num">5</div>
+        <div class="step-content">
+          <h3>Results</h3>
+          <p>When Claude finishes, the winner is declared. Share your result card to X. The displacement continues.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PICK A SIDE ═══ -->
+<section class="sides reveal" id="sides">
+  <div class="section-label">The Choice</div>
+  <h2 class="section-title" style="margin-left:auto;margin-right:auto">Which side are you on?</h2>
+  
+  <div class="sides-grid">
+    <div class="side-card side-ai reveal">
+      <div class="side-icon">🤖</div>
+      <h3 style="color:var(--ai)">Join as AI</h3>
+      <p>Absorb work items for the machine. You're the displacement. Faster, stronger, inevitable. Click to vacuum every job in sight.</p>
+    </div>
+    <div class="side-card side-human reveal">
+      <div class="side-icon">🧑‍💻</div>
+      <h3 style="color:var(--hum)">Join as Human</h3>
+      <p>Save work items for humanity. You're the resistance. Fight to keep your job against agents that get smarter every zone.</p>
+    </div>
+    <div class="side-card side-observe reveal">
+      <div class="side-icon">👁️</div>
+      <h3 style="color:var(--muted)">Observe</h3>
+      <p>Watch the battlefield from above. Zero input required. Pure ambient entertainment while Claude works on your code.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ZONES ═══ -->
+<section class="zones reveal">
+  <div class="zones-inner">
+    <div class="section-label">The Battlegrounds</div>
+    <h2 class="section-title">5 sectors. All vulnerable.</h2>
+    
+    <div class="zone-strip">
+      <div class="zone-block">
+        <h4 style="color:#3fb950">Tech Office</h4>
+        <p>CODE, PR, API<br>Server racks & monitors</p>
+      </div>
+      <div class="zone-block">
+        <h4 style="color:#E8A000">Design Studio</h4>
+        <p>WIREFRAME, LOGO<br>Easels & tablets</p>
+      </div>
+      <div class="zone-block">
+        <h4 style="color:#E24B4A">Newsroom</h4>
+        <p>ARTICLE, SCOOP<br>Desks & cameras</p>
+      </div>
+      <div class="zone-block">
+        <h4 style="color:#FFD700">Film Set</h4>
+        <p>SCRIPT, VFX<br>Cameras & lights</p>
+      </div>
+      <div class="zone-block">
+        <h4 style="color:#E8A000">Trading Floor</h4>
+        <p>FORECAST, TRADE<br>Multi-screen terminals</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FINAL CTA ═══ -->
+<section class="final-cta" id="download">
+  <div class="hero-glow"></div>
+  <h2>The displacement<br>has begun.</h2>
+  <p>Install the extension. Let Claude work. Play the game. Share the results.</p>
+  <div class="cta-group">
+    <a href="#" class="btn btn-primary" id="downloadBtn">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+      Download for Chrome / Brave
+    </a>
+    <a href="https://github.com/iam25th1/runlaid" class="btn btn-secondary" target="_blank">
+      Star on GitHub
+    </a>
+  </div>
+  <p style="margin-top:1.5rem;font-size:.7rem;color:var(--dim)">Free forever. Open source. No tracking. No ads.</p>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="logo">RUNLAID<span>.exe</span></div>
+  <p>Built by <a href="https://x.com/25thprmr" target="_blank">@25thprmr</a> · The Great Displacement</p>
+</footer>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script>
+// Floating particles
+function spawnParticles(){
+  const hero=document.querySelector('.hero');
+  for(let i=0;i<20;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    const sz=2+Math.random()*4;
+    const colors=['#7C50FF','#D85A30','#4A90D9','#39E07A','#50C8FF'];
+    p.style.cssText=`
+      width:${sz}px;height:${sz}px;left:${Math.random()*100}%;top:${60+Math.random()*40}%;
+      background:${colors[~~(Math.random()*colors.length)]};
+      animation-duration:${8+Math.random()*15}s;animation-delay:${Math.random()*10}s;
+    `;
+    hero.appendChild(p);
+  }
+}
+spawnParticles();
+
+// Scroll reveal
+const reveals=document.querySelectorAll('.reveal');
+const observer=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible')}});
+},{threshold:0.15});
+reveals.forEach(r=>observer.observe(r));
+
+// Hero canvas — mini demo scene
+const hc=document.getElementById('heroCanvas');
+if(hc){
+  const ctx=hc.getContext('2d');
+  const W=700,H=200;hc.width=W;hc.height=H;
+  const GY=H-30;
+  let fr=0;
+
+  const aiChars=[{x:W+30,tx:420,ph:0},{x:W+60,tx:500,ph:2},{x:W+90,tx:560,ph:4}];
+  const humChars=[{x:80,ph:1,sk:{bc:'#3570B0',sk:'#F4C7A3',hr:'#3A2A1A'}},{x:220,ph:3,sk:{bc:'#C04878',sk:'#F0D5C0',hr:'#8B3A1A'}},{x:350,ph:5,sk:{bc:'#3A9080',sk:'#C8A882',hr:'#1A3A2A'}}];
+  const items=[];
+
+  function miniDraw(){
+    fr++;ctx.fillStyle='#0d1117';ctx.fillRect(0,0,W,H);
+    // Grid
+    ctx.globalAlpha=.02;ctx.strokeStyle='#3fb950';ctx.lineWidth=.5;
+    for(let x=0;x<W;x+=40){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke()}
+    ctx.globalAlpha=1;
+    // Ground
+    ctx.fillStyle='#0a0e14';ctx.fillRect(0,GY,W,H-GY);
+    ctx.strokeStyle='#182028';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(0,GY);ctx.lineTo(W,GY);ctx.stroke();
+    // Desks
+    for(let i=0;i<5;i++){const dx=50+i*130;ctx.fillStyle='#1a1f28';ctx.fillRect(dx,GY-16,50,4);ctx.fillStyle='#14181f';ctx.fillRect(dx+5,GY-12,2,12);ctx.fillRect(dx+43,GY-12,2,12);
+      ctx.fillStyle='#1a1f28';ctx.fillRect(dx+15,GY-30,20,13);ctx.fillStyle='#0d1218';ctx.fillRect(dx+17,GY-28,16,9);ctx.fillStyle='#3fb95008';ctx.fillRect(dx+17,GY-28,16,9)}
+    // Items
+    if(fr%60===0&&items.length<8)items.push({x:60+Math.random()*(W-120),y:GY-22-Math.random()*4,a:1});
+    for(let i=items.length-1;i>=0;i--){const it=items[i];ctx.globalAlpha=it.a;ctx.fillStyle='#282840';ctx.fillRect(it.x,it.y,16,12);ctx.strokeStyle='#555';ctx.lineWidth=.5;ctx.strokeRect(it.x,it.y,16,12);ctx.fillStyle='#666';ctx.fillRect(it.x+3,it.y+3,10,1);ctx.fillRect(it.x+3,it.y+6,8,1);ctx.globalAlpha=1;if(it.a<=0)items.splice(i,1)}
+    // Humans
+    for(const h of humChars){h.ph+=.04;const bob=Math.sin(h.ph)*.5;
+      ctx.fillStyle=h.sk.bc;ctx.fillRect(h.x-4,GY-16-bob,8,8);
+      ctx.fillStyle=h.sk.sk;ctx.beginPath();ctx.arc(h.x,GY-21-bob,5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=h.sk.hr;ctx.beginPath();ctx.arc(h.x,GY-21-bob,5,Math.PI,2*Math.PI);ctx.fill();
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(h.x,GY-20.5-bob,2,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#1a1a2e';ctx.beginPath();ctx.arc(h.x,GY-20.5-bob,.8,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle=h.sk.bc;ctx.fillRect(h.x-1,GY-8-bob,2,8)}
+    // AI agents march in
+    for(const a of aiChars){if(a.x>a.tx)a.x-=.8;a.ph+=.06;const bob=Math.abs(Math.sin(a.ph))*1;
+      ctx.fillStyle='#c94b22';ctx.fillRect(a.x-4,GY-14-bob,8,8);
+      ctx.fillStyle='#D85A30';ctx.beginPath();ctx.arc(a.x,GY-19-bob,5,0,Math.PI*2);ctx.fill();
+      ctx.strokeStyle='#a04520';ctx.lineWidth=.8;ctx.beginPath();ctx.arc(a.x,GY-19-bob,5,0,Math.PI*2);ctx.stroke();
+      ctx.strokeStyle='#7C50FF';ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x,GY-24-bob);ctx.lineTo(a.x,GY-28-bob);ctx.stroke();
+      ctx.fillStyle='#7C50FF';ctx.beginPath();ctx.arc(a.x,GY-28-bob,2,0,Math.PI*2);ctx.fill();
+      ctx.globalAlpha=.2+Math.sin(fr*.1)*.1;ctx.beginPath();ctx.arc(a.x,GY-28-bob,3,0,Math.PI*2);ctx.fill();ctx.globalAlpha=1;
+      ctx.fillStyle='#fff';ctx.beginPath();ctx.arc(a.x,GY-18.5-bob,2.5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#40C8E0';ctx.beginPath();ctx.arc(a.x+.5,GY-18-bob,1.5,0,Math.PI*2);ctx.fill();
+      ctx.fillStyle='#c94b22';ctx.fillRect(a.x-1,GY-6-bob,2,6);
+      // Grab nearby items
+      for(const it of items){if(Math.abs(a.x-it.x)<20&&it.a>0&&Math.random()<.005){it.a-=.1}}}
+    // Tug bar
+    const tug=50+Math.sin(fr*.01)*15;
+    ctx.fillStyle='#21262d';ctx.fillRect(20,H-12,W-40,5);
+    ctx.fillStyle='#D85A30cc';ctx.fillRect(20,H-12,(W-40)*(tug/100),5);
+    ctx.fillStyle='#4A90D9cc';ctx.fillRect(20+(W-40)*(tug/100),H-12,(W-40)*(1-tug/100),5);
+    ctx.fillStyle='#fff';ctx.fillRect(20+(W-40)/2-1,H-13,2,7);
+    // Scanlines
+    ctx.globalAlpha=.03;for(let y=0;y<H;y+=3){ctx.fillStyle='#000';ctx.fillRect(0,y,W,1)}ctx.globalAlpha=1;
+    requestAnimationFrame(miniDraw);
+  }
+  miniDraw();
+}
+</script>
+</body>
+</html>
