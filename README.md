@@ -2,47 +2,39 @@
 
 # RUNLAID.exe
 
-### The Great Displacement
+### 100 Satirical Mini-Games That Play While Claude Works
 
-A satirical mini-game that auto-plays on [claude.ai](https://claude.ai) while Claude works.<br>
-AI agents invade your workplace. Pick a side. Fight for the future.
+A Chrome extension that auto-launches a random game on [claude.ai](https://claude.ai) whenever Claude streams a long response. Different game every time. AI vs Humans.
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![Chrome Extension](https://img.shields.io/badge/Chrome-Extension-brightgreen)](https://github.com/iam25th1/runlaid/releases)
+[![Games](https://img.shields.io/badge/Games-12%20%2F%20100-7C50FF)](https://github.com/iam25th1/runlaid)
 [![Twitter](https://img.shields.io/badge/Follow-@25thprmr-1DA1F2)](https://x.com/25thprmr)
 
-[**Install**](#install) · [**How It Works**](#how-it-works) · [**Game Guide**](#game-guide) · [**Contributing**](#contributing) · [**Support**](#support-the-project)
+[**Install**](#install) · [**The Games**](#the-games) · [**How It Works**](#how-it-works) · [**Contributing**](#contributing) · [**Support**](#support-the-project)
 
 ---
-
-<!-- TODO: Add screenshot/gif here -->
-<!-- ![RUNLAID.exe Demo](assets/screenshots/hero-demo.gif) -->
 
 </div>
 
 ## What Is This?
 
-RUNLAID.exe is a Chrome/Brave extension that detects when Claude is streaming a long response and launches a **click-based turf war mini-game** right above Claude's input box.
+RUNLAID.exe is a Chrome/Brave extension that detects when Claude is streaming a long response and launches a **random mini-game** right above Claude's input box.
 
-**3 AI agents vs 3 human workers.** Items spawn on desks. Both sides race to collect them. A tug-of-war bar tracks who's winning. When Claude finishes, the winner is declared.
-
-You can:
-- **Join as AI Agent** — accelerate the displacement
-- **Join as Human** — fight to keep the jobs  
-- **Observe** — watch the chaos unfold passively
+Every time Claude works on a long task, you get a different game. 12 shipped, 100 planned. Each one is a satirical take on AI displacing humans in the workplace.
 
 Free forever. Open source. No tracking. No ads.
 
 ## Install
 
-### From GitHub Releases (Recommended)
+### From GitHub Releases
 
 1. Go to [**Releases**](https://github.com/iam25th1/runlaid/releases) and download the latest `.zip`
-2. Extract the zip to a folder on your computer
+2. Extract the zip to a folder
 3. Open `chrome://extensions` (or `brave://extensions`)
-4. Enable **Developer mode** (toggle in the top right)
-5. Click **Load unpacked** → select the extracted `extension/` folder
-6. Go to [claude.ai](https://claude.ai) — the game auto-triggers during long responses
+4. Enable **Developer mode** (top right toggle)
+5. Click **Load unpacked** and select the `extension/` folder
+6. Visit [claude.ai](https://claude.ai) and send a long task
 
 ### From Source
 
@@ -52,140 +44,151 @@ cd runlaid
 ```
 Then load the `extension/` folder as an unpacked extension (steps 3-6 above).
 
+## The Games
+
+12 games and counting. A new random game every time Claude starts streaming.
+
+| # | Game | What You Do |
+|---|------|------------|
+| 1 | **The Great Displacement** | 3v3 turf war. Click to walk, collect work items, pick AI or Human side |
+| 2 | **Displacement Whack** | AI agents pop up at desks. Whack them. Don't hit humans |
+| 3 | **Office Breakout** | Paddle + ball. Smash AI agent bricks. Catch power-ups |
+| 4 | **Resume Raid** | Shoot resumes upward at descending AI formations. Hold to auto-fire |
+| 5 | **Coffee Rush** | Workers fall asleep. Click to deliver coffee before AI takes their desk |
+| 6 | **Wire Tap** | AI cables grow toward stations. Click the tips to sever them |
+| 7 | **Firewall** | Toggle lane barriers. Block AI packets (red), let humans (blue) through |
+| 8 | **Ctrl+Z** | AI edits scroll across code. Click to undo. Don't touch human edits |
+| 9 | **Desk Shuffle** | Shell game. Memorize humans, desks shuffle, find them again |
+| 10 | **Spam Filter** | Emails fall. Click left = trash (AI spam). Click right = inbox (human mail) |
+| 11 | **Signal Boost** | Radio towers decay. Click to boost signal. Click AI jammers to destroy |
+| 12 | **Pixel Turf** | Grid territory. Click tiles to claim. AI virus spreads to adjacent tiles |
+
+Every game has a different mechanic. No two play the same. The registry picks randomly with repeat avoidance so you won't play the same game twice in a row.
+
+### Shared Mechanics
+
+All games share these elements:
+
+- **5 Workplace Zones** that unlock as Claude's response progresses (Tech Office, Design Studio, Newsroom, Film Set, Trading Floor)
+- **Progressive difficulty** that scales with zones
+- **Intro screen** with quick instructions before gameplay starts
+- **Results screen** when Claude finishes with score, stats, and a verdict
+
 ## How It Works
 
-1. **Detection** — The extension watches for `[data-is-streaming="true"]` on claude.ai
-2. **Trigger** — After 5 seconds of continuous streaming, the game launches
-3. **Play** — A canvas overlay appears above Claude's input box with the turf war
-4. **Sync** — Game progress is tied to Claude's actual streaming duration
-5. **End** — When Claude stops, the game finishes and shows results
+1. **Detection** -- Watches for `[data-is-streaming="true"]` on claude.ai
+2. **Trigger** -- After 5 seconds of continuous streaming, a random game launches
+3. **Play** -- Canvas overlay appears above Claude's input box
+4. **Sync** -- Game progress is tied to Claude's actual streaming duration
+5. **End** -- When Claude stops streaming, the game wraps up and shows results
 
-The game runs entirely client-side. No data is sent anywhere. No network requests. No tracking.
+The game runs entirely client-side. No data is sent anywhere. No network requests. No tracking. Not even localStorage.
 
-## Game Guide
-
-### Zones (5 sectors, unlocked by task progress)
-
-| Zone | Setting | Items | Difficulty |
-|------|---------|-------|------------|
-| Tech Office | Monitors, servers | CODE, PR, API | 1.0× |
-| Design Studio | Easels, tablets | WIREFRAME, LOGO | 1.25× |
-| Newsroom | Desks, cameras | ARTICLE, SCOOP | 1.5× |
-| Film Set | Cameras, lights | SCRIPT, VFX | 1.75× |
-| Trading Floor | Multi-screens | FORECAST, TRADE | 2.0× |
-
-### Controls
-
-- **Click anywhere** → your character walks there
-- **Click near an item** → walk there and pick it up
-- **Walk past items** → auto-collect within 12px
-- **Click power-ups** → activate special ability
-
-### Power-Ups
-
-| Power-Up | Effect | Duration |
-|----------|--------|----------|
-| ⚡ Overclock | 2.5× item spawn rate | ~7 seconds |
-| ❄ Freeze | Opponents stop moving | ~3.3 seconds |
-| ◎ Magnet | Nearby items drift toward you | ~5 seconds |
-
-### Scoring
-
-- **Your grabs:** 1.5 points to your side
-- **AI NPC grabs:** 0.7 × zone difficulty multiplier
-- **Human NPC grabs:** 0.5 points
-- The tug-of-war bar determines the winner
-
-### Sharing
-
-After the game ends, two buttons appear:
-- **🐦 Share on X** — Opens Twitter with pre-filled results + downloads PNG card
-- **💾 Save Card** — Downloads a 600×315 PNG result card
-
-## Project Structure
+## Architecture
 
 ```
 runlaid/
-├── extension/              # Chrome/Brave extension
-│   ├── manifest.json       # Manifest V3
-│   ├── content.js          # Streaming detection + game engine
+├── extension/
+│   ├── manifest.json       # Manifest V3, content script on claude.ai only
+│   ├── content.js          # Detection + overlay + game registry + all games
 │   ├── icon48.png
 │   └── icon128.png
-├── docs/                   # Documentation
-│   ├── game-design/        # Full GDD (design, mechanics, art)
-│   ├── architecture.md     # Technical architecture
+├── docs/
+│   ├── game-design/
+│   ├── architecture.md
 │   ├── streaming-detection.md
 │   └── changelog.md
-├── assets/                 # Store/marketing assets
-│   ├── screenshots/
-│   └── store/
 ├── index.html              # Landing page
+├── privacy.html            # Privacy policy
 ├── LICENSE                 # GPL v3
 └── README.md
 ```
 
+### Game Registry
+
+Every game is a single `registerGame()` call with a factory function that receives a canvas and returns `{start, setProgress, getState, destroy}`. Adding a new game is one function.
+
+```javascript
+registerGame({
+  id: 'my-game',
+  name: 'My Game',
+  factory: function(canvas) {
+    // your entire game here
+    return { start, setProgress, getState, destroy };
+  }
+});
+```
+
+The registry handles random selection, repeat avoidance, canvas setup, and lifecycle management. Games don't need to know about Claude, streaming, or the overlay.
+
 ## Contributing
 
-Contributions welcome! Here's how:
+We're building toward 100 games. Contributions welcome.
 
 1. **Fork** the repo
-2. **Create a branch** (`git checkout -b feature/your-feature`)
-3. **Make your changes** — the entire game is in `extension/content.js`
-4. **Test** — load the extension unpacked and test on claude.ai
-5. **Submit a PR** with a clear description
+2. **Create a branch** (`git checkout -b game/your-game-name`)
+3. **Write your game** using the `registerGame()` template
+4. **Test** with the test harness (`test-games.html`) or load the extension
+5. **Submit a PR** with a description of the game mechanic
 
-### Ideas for Contributions
+### Game Guidelines
 
-- New workplace zones (Hospital, Courtroom, Classroom, etc.)
-- New power-ups
-- Character skins/cosmetics
-- Sound effects (optional, toggle-able)
-- Firefox/Safari support
+- Canvas is 640x180 (wide banner format)
+- Mouse only (click, move, hold, drag)
+- AI vs Humans theme
+- Include an intro screen with quick instructions
+- Include a results screen with score and stats
+- Must implement `destroy()` to clean up event listeners
+- No network requests, no storage, no external dependencies
+
+### Other Contributions
+
+- New workplace zones
+- Power-up ideas
+- Bug fixes
+- Firefox/Safari port
 - Performance optimizations
-- Accessibility improvements
-- Localization
+- Landing page improvements
 
-### Code Architecture
+## Privacy
 
-The entire extension is a single `content.js` file split into two sections:
-
-1. **Streaming Detection Layer** (lines 1–270) — DOM polling, overlay management, progress feeding
-2. **Game Engine** (lines 270+) — Self-contained canvas game with state machine, entities, drawing, input
-
-See `docs/architecture.md` for details.
+- Zero data collection
+- Zero network requests
+- Zero storage access
+- Zero access to conversations
+- Everything runs locally
+- [Full privacy policy](https://iam25th1.github.io/runlaid/privacy.html)
 
 ## Support the Project
 
-RUNLAID.exe is and always will be **100% free**. No premium tiers, no ads, no data collection.
+RUNLAID.exe is 100% free. No premium tiers, no ads, no data collection.
 
-If you enjoy it, you can support development:
-
-- ⭐ **Star this repo** — it helps visibility
-- 🐦 **Share on X** — use the in-game share button or tag [@25thprmr](https://x.com/25thprmr)
-- ☕ **Buy me a coffee** — [ko-fi.com/25thprmr](https://ko-fi.com/25thprmr)
-- 🐛 **Report bugs** — [open an issue](https://github.com/iam25th1/runlaid/issues)
-- 🔧 **Contribute** — PRs welcome!
+- Star this repo
+- Share on X ([@25thprmr](https://x.com/25thprmr))
+- [Buy me a coffee](https://ko-fi.com/25thprmr)
+- [Report bugs](https://github.com/iam25th1/runlaid/issues)
+- Contribute a game
 
 ## FAQ
 
 **Does this work on Firefox?**
-Not yet. Manifest V3 support varies. Firefox port is a welcome contribution.
+Not yet. Firefox port is a welcome contribution.
 
 **Does it affect Claude's performance?**
-No. The game runs entirely in the browser's content script layer. It doesn't interfere with Claude's API calls, streaming, or DOM operations.
+No. The game runs in the browser's content script layer. It doesn't interfere with Claude's API calls or streaming.
 
 **Will this trigger on short responses?**
-No. The game only launches after 5+ seconds of continuous streaming.
+No. Only after 5+ seconds of continuous streaming.
 
 **Is my data safe?**
-Yes. The extension makes zero network requests. No analytics, no tracking, no external calls. Everything runs locally in your browser.
+Yes. Zero network requests. Zero storage. Zero tracking. Everything runs locally.
 
-**Can I use this at work?**
-That's between you and your manager. But the game auto-hides when Claude finishes, so... plausible deniability? 👀
+**Same game every time?**
+No. The registry picks a random game each trigger with repeat avoidance. You won't see the same game twice in a row.
 
 ## License
 
-[GPL v3](LICENSE) — Free to use, modify, and distribute. Forks must remain open source. Includes patent protection.
+[GPL v3](LICENSE) -- Free to use, modify, and distribute. Forks must remain open source.
 
 ---
 
@@ -193,6 +196,6 @@ That's between you and your manager. But the game auto-hides when Claude finishe
 
 **Built by [@25thprmr](https://x.com/25thprmr)**
 
-*The displacement continues.*
+*12 down. 88 to go. The displacement continues.*
 
 </div>
