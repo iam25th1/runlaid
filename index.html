@@ -46,16 +46,17 @@ section{position:relative;z-index:2}
 .hero-tagline{font-size:.82rem;color:var(--dim);margin-top:.8rem;max-width:520px;line-height:1.6;animation:fadeSlideUp .8s ease .4s both}
 
 /* COUNTDOWN RING */
-.countdown-wrap{margin-top:2.5rem;animation:fadeSlideUp .8s ease .5s both;position:relative}
-.countdown-ring{width:160px;height:160px;position:relative;margin:0 auto}
-.countdown-ring svg{transform:rotate(-90deg);width:160px;height:160px}
-.ring-bg{fill:none;stroke:var(--brd);stroke-width:8}
-.ring-progress{fill:none;stroke:var(--acc);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset 1s ease}
-.ring-glow{fill:none;stroke:var(--accGlow);stroke-width:12;stroke-linecap:round;opacity:.15;filter:blur(4px)}
+.countdown-wrap{margin-top:2.5rem;animation:fadeSlideUp .8s ease .5s both}
+.countdown-ring{width:170px;height:170px;position:relative;margin:0 auto}
+.countdown-ring svg{transform:rotate(-90deg);width:170px;height:170px}
+.ring-bg{fill:none;stroke:var(--brd);stroke-width:6}
+.ring-track{fill:none;stroke:var(--srf);stroke-width:8}
+.ring-progress{fill:none;stroke:url(#ringGrad);stroke-width:8;stroke-linecap:round;stroke-dasharray:427.3;stroke-dashoffset:427.3;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)}
+.ring-glow{fill:none;stroke:var(--accGlow);stroke-width:14;stroke-linecap:round;opacity:.1;filter:blur(6px);stroke-dasharray:427.3;stroke-dashoffset:427.3;transition:stroke-dashoffset 1.5s cubic-bezier(.4,0,.2,1)}
 .countdown-inner{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center}
-.countdown-num{font-family:'Syne',sans-serif;font-weight:800;font-size:2.8rem;color:#fff;line-height:1}
-.countdown-num span{font-size:1.4rem;color:var(--acc)}
-.countdown-label{font-size:.6rem;color:var(--muted);text-transform:uppercase;letter-spacing:.2em;margin-top:.2rem}
+.countdown-num{font-family:'Syne',sans-serif;font-weight:800;font-size:3rem;color:#fff;line-height:1}
+.countdown-num span{font-size:1.3rem;color:var(--acc);font-weight:700}
+.countdown-label{font-size:.55rem;color:var(--muted);text-transform:uppercase;letter-spacing:.25em;margin-top:.3rem}
 .countdown-sub{font-size:.7rem;color:var(--dim);margin-top:.8rem;text-align:center}
 
 /* CTA */
@@ -68,21 +69,26 @@ section{position:relative;z-index:2}
 .btn::after{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);transition:left .5s ease}
 .btn:hover::after{left:100%}
 .scroll-hint{position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);color:var(--dim);font-size:.7rem;letter-spacing:.15em;text-transform:uppercase;animation:bobDown 2s ease-in-out infinite}
-.scroll-hint::after{content:'\2193';display:block;text-align:center;margin-top:.5rem;font-size:1.2rem;color:var(--acc)}
+.scroll-hint::after{content:'';display:block;text-align:center;margin-top:.5rem;width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:6px solid var(--acc);margin-left:auto;margin-right:auto}
 @keyframes bobDown{0%,100%{transform:translateX(-50%) translateY(0)}50%{transform:translateX(-50%) translateY(8px)}}
 
-/* GAMES SECTION */
+/* SHARED SECTION STYLES */
 .section-label{font-size:.7rem;letter-spacing:.3em;text-transform:uppercase;color:var(--acc);margin-bottom:1rem}
 .section-title{font-family:'Syne',sans-serif;font-weight:800;font-size:clamp(1.8rem,4.5vw,3rem);line-height:1.1;margin-bottom:3rem;max-width:600px}
+
+/* GAMES SECTION */
 .games-section{padding:6rem 2rem;max-width:1100px;margin:0 auto}
 .games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1rem}
-.game-card{background:var(--bg2);border:1px solid var(--brd);border-radius:10px;padding:1.2rem 1.4rem;transition:all .3s ease;position:relative;overflow:hidden}
+.game-card{background:var(--bg2);border:1px solid var(--brd);border-radius:10px;padding:1.2rem 1.4rem;transition:all .3s ease;position:relative;overflow:hidden;display:flex;gap:1rem;align-items:flex-start}
 .game-card:hover{border-color:var(--acc);transform:translateY(-3px);box-shadow:0 8px 30px rgba(124,80,255,.06)}
 .game-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--acc),transparent);opacity:0;transition:opacity .3s}
 .game-card:hover::before{opacity:1}
-.game-num{font-family:'Syne',sans-serif;font-weight:800;font-size:.7rem;color:var(--acc);opacity:.5;margin-bottom:.3rem}
-.game-name{font-family:'Syne',sans-serif;font-weight:700;font-size:1rem;margin-bottom:.4rem}
-.game-desc{font-size:.75rem;color:var(--muted);line-height:1.6}
+.game-icon-wrap{flex-shrink:0;width:36px;height:36px;border-radius:8px;background:var(--srf);display:flex;align-items:center;justify-content:center;border:1px solid var(--brd)}
+.game-icon-wrap svg{width:20px;height:20px}
+.game-info{flex:1;min-width:0}
+.game-num{font-family:'Syne',sans-serif;font-weight:800;font-size:.6rem;color:var(--acc);opacity:.5;margin-bottom:.15rem}
+.game-name{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;margin-bottom:.3rem}
+.game-desc{font-size:.72rem;color:var(--muted);line-height:1.55}
 
 /* HOW IT WORKS */
 .how-section{padding:6rem 2rem;background:var(--bg2);border-top:1px solid var(--brd);border-bottom:1px solid var(--brd)}
@@ -104,7 +110,8 @@ section{position:relative;z-index:2}
 .feature-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem}
 .feat{background:var(--bg2);border:1px solid var(--brd);border-radius:10px;padding:1.5rem;transition:all .3s ease}
 .feat:hover{border-color:var(--acc);transform:translateY(-2px)}
-.feat-icon{font-size:1.5rem;margin-bottom:.8rem;display:block}
+.feat-icon{margin-bottom:.8rem;display:block}
+.feat-icon svg{width:28px;height:28px}
 .feat h3{font-family:'Syne',sans-serif;font-weight:700;font-size:.95rem;margin-bottom:.5rem}
 .feat p{font-size:.75rem;color:var(--muted);line-height:1.6}
 
@@ -129,10 +136,8 @@ footer a:hover{text-decoration:underline}
 .glitch::after{animation:glitchBottom 2.5s infinite;clip-path:polygon(0 67%,100% 67%,100% 100%,0 100%);-webkit-text-fill-color:var(--hum);opacity:.8}
 @keyframes glitchTop{0%,90%,100%{transform:translate(0)}92%{transform:translate(-3px,-1px)}94%{transform:translate(3px,1px)}96%{transform:translate(-2px)}98%{transform:translate(1px,-1px)}}
 @keyframes glitchBottom{0%,88%,100%{transform:translate(0)}90%{transform:translate(2px,1px)}93%{transform:translate(-3px)}95%{transform:translate(1px,-1px)}97%{transform:translate(-1px,2px)}}
-
 .particle{position:absolute;border-radius:50%;pointer-events:none;animation:floatUp linear infinite}
 @keyframes floatUp{0%{transform:translateY(0) scale(1);opacity:.4}50%{opacity:.2}100%{transform:translateY(-100vh) scale(0);opacity:0}}
-
 .reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.16,1,.3,1)}
 .reveal.visible{opacity:1;transform:translateY(0)}
 @media(max-width:768px){.games-grid{grid-template-columns:1fr}.feature-row{grid-template-columns:1fr}.step{gap:1rem}}
@@ -141,6 +146,31 @@ footer a:hover{text-decoration:underline}
 <body>
 <div class="grid-bg"></div>
 <div class="noise"></div>
+
+<!-- pixel-art style icons as inline SVG defs -->
+<svg style="display:none">
+<defs>
+  <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#7C50FF"/><stop offset="100%" stop-color="#A47CFF"/></linearGradient>
+  <!-- game icons: 20x20 pixel-art style -->
+  <symbol id="ico-sword" viewBox="0 0 20 20"><path d="M3 17l2-2m0 0l8-8 4-4-1 3-1 1H13l-1 1v2l-1 1-6 6-2-2z" stroke="#7C50FF" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="14" width="3" height="3" rx="1" fill="#7C50FF" opacity=".3"/></symbol>
+  <symbol id="ico-hammer" viewBox="0 0 20 20"><rect x="9" y="8" width="2" height="10" rx="1" fill="#E8A000"/><rect x="5" y="3" width="10" height="6" rx="2" fill="#888" stroke="#aaa" stroke-width=".5"/><rect x="6" y="4" width="3" height="2" rx=".5" fill="#bbb"/></symbol>
+  <symbol id="ico-paddle" viewBox="0 0 20 20"><rect x="3" y="14" width="14" height="3" rx="1.5" fill="#4A90D9"/><circle cx="10" cy="6" r="3" fill="#fff" stroke="#ddd" stroke-width=".5"/><line x1="10" y1="9" x2="10" y2="11" stroke="#888" stroke-width="1"/></symbol>
+  <symbol id="ico-rocket" viewBox="0 0 20 20"><path d="M10 2c-2 3-3 6-3 9h6c0-3-1-6-3-9z" fill="#4A90D9" stroke="#3570B0" stroke-width=".5"/><rect x="7" y="11" width="6" height="3" rx="1" fill="#D85A30"/><path d="M8 14l-1 3h2v-3m3 0v3h2l-1-3" fill="#E8A000"/><circle cx="10" cy="7" r="1.5" fill="#fff"/></symbol>
+  <symbol id="ico-coffee" viewBox="0 0 20 20"><rect x="5" y="7" width="8" height="9" rx="1" fill="#8B5E3C"/><path d="M13 9h2a2 2 0 010 4h-2" fill="none" stroke="#8B5E3C" stroke-width="1.5"/><path d="M7 5q1.5-3 3 0 1.5-3 3 0" fill="none" stroke="#aaa" stroke-width=".8" opacity=".5"/><rect x="5" y="16" width="8" height="1" rx=".5" fill="#5C3A1E"/></symbol>
+  <symbol id="ico-wire" viewBox="0 0 20 20"><circle cx="3" cy="10" r="2" fill="#D85A30"/><circle cx="17" cy="10" r="2" fill="#4A90D9"/><path d="M5 10q3-6 5 0t5 0" fill="none" stroke="#E24B4A" stroke-width="1.5" stroke-linecap="round"/><line x1="12" y1="8" x2="14" y2="6" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="ico-shield" viewBox="0 0 20 20"><path d="M10 2l7 3v5c0 4-3 7-7 8-4-1-7-4-7-8V5l7-3z" fill="none" stroke="#7C50FF" stroke-width="1.5"/><path d="M10 5l4 2v3c0 2.5-1.8 4.2-4 5-2.2-.8-4-2.5-4-5V7l4-2z" fill="#7C50FF" opacity=".15"/><path d="M8 10l2 2 3-4" fill="none" stroke="#39E07A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="ico-undo" viewBox="0 0 20 20"><path d="M4 10a6 6 0 1112 0 6 6 0 01-12 0" fill="none" stroke="#7C50FF" stroke-width="1.5"/><path d="M4 4v6h6" fill="none" stroke="#7C50FF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><rect x="8" y="8" width="5" height="1" rx=".5" fill="#D85A30"/><rect x="8" y="10.5" width="4" height="1" rx=".5" fill="#4A90D9"/></symbol>
+  <symbol id="ico-shuffle" viewBox="0 0 20 20"><rect x="1" y="6" width="5" height="8" rx="1" fill="#1E1C30" stroke="#7C50FF" stroke-width="1"/><rect x="7.5" y="6" width="5" height="8" rx="1" fill="#1E1C30" stroke="#7C50FF" stroke-width="1"/><rect x="14" y="6" width="5" height="8" rx="1" fill="#1E1C30" stroke="#7C50FF" stroke-width="1"/><text x="3.5" y="12" font-size="6" fill="#7C50FF" text-anchor="middle" font-weight="bold">?</text><text x="10" y="12" font-size="6" fill="#7C50FF" text-anchor="middle" font-weight="bold">?</text><text x="16.5" y="12" font-size="6" fill="#7C50FF" text-anchor="middle" font-weight="bold">?</text><path d="M4 4l3 2M13 4l3 2" fill="none" stroke="#E8A000" stroke-width="1" stroke-linecap="round"/></symbol>
+  <symbol id="ico-mail" viewBox="0 0 20 20"><rect x="2" y="5" width="16" height="11" rx="2" fill="none" stroke="#4A90D9" stroke-width="1.5"/><path d="M2 5l8 6 8-6" fill="none" stroke="#4A90D9" stroke-width="1.5"/><rect x="11" y="2" width="7" height="5" rx="1" fill="#D85A30" opacity=".8"/><text x="14.5" y="6" font-size="4" fill="#fff" text-anchor="middle" font-weight="bold">AI</text></symbol>
+  <symbol id="ico-signal" viewBox="0 0 20 20"><rect x="9" y="8" width="2" height="10" rx=".5" fill="#555"/><rect x="6" y="5" width="8" height="3" rx="1" fill="#888"/><path d="M4 6a7 7 0 000 0" fill="none" stroke="#4A90D9" stroke-width="1.5" stroke-linecap="round"/><path d="M2 4q4 6 0 12" fill="none" stroke="#4A90D9" stroke-width="1" opacity=".5"/><path d="M18 4q-4 6 0 12" fill="none" stroke="#4A90D9" stroke-width="1" opacity=".5"/><circle cx="14" cy="4" r="2" fill="#D85A30"/><line x1="13" y1="3" x2="15" y2="5" stroke="#fff" stroke-width=".8"/><line x1="15" y1="3" x2="13" y2="5" stroke="#fff" stroke-width=".8"/></symbol>
+  <symbol id="ico-grid" viewBox="0 0 20 20"><rect x="2" y="2" width="4" height="4" fill="#4A90D9"/><rect x="8" y="2" width="4" height="4" fill="#D85A30"/><rect x="14" y="2" width="4" height="4" fill="#4A90D9"/><rect x="2" y="8" width="4" height="4" fill="#D85A30"/><rect x="8" y="8" width="4" height="4" fill="#4A90D9"/><rect x="14" y="8" width="4" height="4" fill="#4A90D9"/><rect x="2" y="14" width="4" height="4" fill="#4A90D9"/><rect x="8" y="14" width="4" height="4" fill="#D85A30"/><rect x="14" y="14" width="4" height="4" fill="#D85A30"/></symbol>
+  <!-- feature icons -->
+  <symbol id="ico-bolt" viewBox="0 0 20 20"><path d="M11 1L4 11h5l-2 8 7-10h-5l2-8z" fill="#E8A000" stroke="#E8A000" stroke-width=".5" stroke-linejoin="round"/></symbol>
+  <symbol id="ico-dice" viewBox="0 0 20 20"><rect x="2" y="2" width="16" height="16" rx="3" fill="none" stroke="#7C50FF" stroke-width="1.5"/><circle cx="6" cy="6" r="1.5" fill="#7C50FF"/><circle cx="10" cy="10" r="1.5" fill="#7C50FF"/><circle cx="14" cy="14" r="1.5" fill="#7C50FF"/><circle cx="14" cy="6" r="1.5" fill="#7C50FF"/><circle cx="6" cy="14" r="1.5" fill="#7C50FF"/></symbol>
+  <symbol id="ico-lock" viewBox="0 0 20 20"><rect x="4" y="9" width="12" height="9" rx="2" fill="none" stroke="#39E07A" stroke-width="1.5"/><path d="M7 9V6a3 3 0 016 0v3" fill="none" stroke="#39E07A" stroke-width="1.5"/><circle cx="10" cy="13.5" r="1.5" fill="#39E07A"/></symbol>
+  <symbol id="ico-code" viewBox="0 0 20 20"><path d="M7 5L2 10l5 5" fill="none" stroke="#E8E4F0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M13 5l5 5-5 5" fill="none" stroke="#E8E4F0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><line x1="9" y1="3" x2="11" y2="17" stroke="#7C50FF" stroke-width="1.5" stroke-linecap="round"/></symbol>
+</defs>
+</svg>
 
 <section class="hero" id="hero">
   <div class="hero-glow"></div>
@@ -154,10 +184,11 @@ footer a:hover{text-decoration:underline}
 
   <div class="countdown-wrap">
     <div class="countdown-ring">
-      <svg viewBox="0 0 160 160">
-        <circle class="ring-glow" cx="80" cy="80" r="68" stroke-dasharray="427.3" stroke-dashoffset="375.9"/>
-        <circle class="ring-bg" cx="80" cy="80" r="68" stroke-dasharray="427.3"/>
-        <circle class="ring-progress" cx="80" cy="80" r="68" stroke-dasharray="427.3" stroke-dashoffset="375.9"/>
+      <svg viewBox="0 0 170 170">
+        <circle class="ring-bg" cx="85" cy="85" r="68"/>
+        <circle class="ring-track" cx="85" cy="85" r="68" stroke-dasharray="427.3"/>
+        <circle class="ring-glow" cx="85" cy="85" r="68"/>
+        <circle class="ring-progress" cx="85" cy="85" r="68"/>
       </svg>
       <div class="countdown-inner">
         <div class="countdown-num">12<span>/100</span></div>
@@ -182,20 +213,20 @@ footer a:hover{text-decoration:underline}
 
 <section class="games-section reveal" id="games">
   <div class="section-label">The Arcade</div>
-  <h2 class="section-title">12 games. 12 different mechanics. Zero repeats.</h2>
+  <h2 class="section-title">100 games. 100 different mechanics. Zero repeats.</h2>
   <div class="games-grid">
-    <div class="game-card reveal"><div class="game-num">#01</div><div class="game-name">The Great Displacement</div><div class="game-desc">3v3 turf war. Click to walk, collect work items. Pick AI or Human side.</div></div>
-    <div class="game-card reveal"><div class="game-num">#02</div><div class="game-name">Displacement Whack</div><div class="game-desc">AI agents pop up at desks. Whack them before they duck. Don't hit humans.</div></div>
-    <div class="game-card reveal"><div class="game-num">#03</div><div class="game-name">Office Breakout</div><div class="game-desc">Paddle and ball. Smash rows of AI agent bricks. Catch WIDE, MULTI, FAST power-ups.</div></div>
-    <div class="game-card reveal"><div class="game-num">#04</div><div class="game-name">Resume Raid</div><div class="game-desc">Shoot resumes upward at descending AI formations. Hold to auto-fire. Dodge their code snippets.</div></div>
-    <div class="game-card reveal"><div class="game-num">#05</div><div class="game-name">Coffee Rush</div><div class="game-desc">Workers get drowsy. Click to deliver coffee before they fall asleep. If they sleep, AI takes their desk.</div></div>
-    <div class="game-card reveal"><div class="game-num">#06</div><div class="game-name">Wire Tap</div><div class="game-desc">AI cables grow toward human stations along curved paths. Click the cable tips to sever them.</div></div>
-    <div class="game-card reveal"><div class="game-num">#07</div><div class="game-name">Firewall</div><div class="game-desc">Toggle barriers across 5 lanes. Block red AI packets. Let blue human packets through.</div></div>
-    <div class="game-card reveal"><div class="game-num">#08</div><div class="game-name">Ctrl+Z</div><div class="game-desc">AI edits scroll across code. Click red edits to undo. Don't touch blue human edits.</div></div>
-    <div class="game-card reveal"><div class="game-num">#09</div><div class="game-name">Desk Shuffle</div><div class="game-desc">Shell game. Memorize where humans sit. Desks shuffle. Click to find the humans again.</div></div>
-    <div class="game-card reveal"><div class="game-num">#10</div><div class="game-name">Spam Filter</div><div class="game-desc">Emails rain down. Click left side to trash AI spam. Click right side to inbox human mail.</div></div>
-    <div class="game-card reveal"><div class="game-num">#11</div><div class="game-name">Signal Boost</div><div class="game-desc">Radio towers lose signal. Click to boost. AI jammers drain them. Click jammers to destroy.</div></div>
-    <div class="game-card reveal"><div class="game-num">#12</div><div class="game-name">Pixel Turf</div><div class="game-desc">Grid territory war. Click tiles to claim for humans. AI virus spreads to adjacent tiles.</div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-sword"/></svg></div><div class="game-info"><div class="game-num">#01</div><div class="game-name">The Great Displacement</div><div class="game-desc">3v3 turf war. Click to walk, collect work items. Pick AI or Human side.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-hammer"/></svg></div><div class="game-info"><div class="game-num">#02</div><div class="game-name">Displacement Whack</div><div class="game-desc">AI agents pop up at desks. Whack them before they duck. Don't hit humans.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-paddle"/></svg></div><div class="game-info"><div class="game-num">#03</div><div class="game-name">Office Breakout</div><div class="game-desc">Paddle and ball. Smash rows of AI agent bricks. Catch WIDE, MULTI, FAST power-ups.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-rocket"/></svg></div><div class="game-info"><div class="game-num">#04</div><div class="game-name">Resume Raid</div><div class="game-desc">Shoot resumes upward at descending AI formations. Hold to auto-fire. Dodge code snippets.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-coffee"/></svg></div><div class="game-info"><div class="game-num">#05</div><div class="game-name">Coffee Rush</div><div class="game-desc">Workers get drowsy. Click to deliver coffee before they sleep. If they sleep, AI takes the desk.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-wire"/></svg></div><div class="game-info"><div class="game-num">#06</div><div class="game-name">Wire Tap</div><div class="game-desc">AI cables grow toward human stations along curved paths. Click cable tips to sever them.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-shield"/></svg></div><div class="game-info"><div class="game-num">#07</div><div class="game-name">Firewall</div><div class="game-desc">Toggle barriers across 5 lanes. Block red AI packets. Let blue human packets through.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-undo"/></svg></div><div class="game-info"><div class="game-num">#08</div><div class="game-name">Ctrl+Z</div><div class="game-desc">AI edits scroll across code. Click red edits to undo. Don't touch blue human edits.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-shuffle"/></svg></div><div class="game-info"><div class="game-num">#09</div><div class="game-name">Desk Shuffle</div><div class="game-desc">Shell game. Memorize where humans sit. Desks shuffle. Click to find the humans again.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-mail"/></svg></div><div class="game-info"><div class="game-num">#10</div><div class="game-name">Spam Filter</div><div class="game-desc">Emails rain down. Click left side to trash AI spam. Click right side to inbox human mail.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-signal"/></svg></div><div class="game-info"><div class="game-num">#11</div><div class="game-name">Signal Boost</div><div class="game-desc">Radio towers lose signal. Click to boost. AI jammers drain them. Click jammers to destroy.</div></div></div>
+    <div class="game-card reveal"><div class="game-icon-wrap"><svg><use href="#ico-grid"/></svg></div><div class="game-info"><div class="game-num">#12</div><div class="game-name">Pixel Turf</div><div class="game-desc">Grid territory war. Click tiles to claim for humans. AI virus spreads to adjacent tiles.</div></div></div>
   </div>
 </section>
 
@@ -214,11 +245,11 @@ footer a:hover{text-decoration:underline}
       </div>
       <div class="step reveal">
         <div class="step-num">3</div><div class="step-line"></div>
-        <div class="step-content"><h3>Play While You Wait</h3><p>Every game has different controls and mechanics. Quick intro tells you what to do. Progress syncs with Claude's response.</p></div>
+        <div class="step-content"><h3>Play While You Wait</h3><p>Every game has different controls. Quick intro tells you what to do. Progress syncs with Claude's response.</p></div>
       </div>
       <div class="step reveal">
         <div class="step-num">4</div>
-        <div class="step-content"><h3>Results + Next Game</h3><p>When Claude finishes, the game wraps up with your score. Next time, you get a completely different game.</p></div>
+        <div class="step-content"><h3>Results + Next Game</h3><p>When Claude finishes, the game wraps up with your score. Next time, a completely different game.</p></div>
       </div>
     </div>
   </div>
@@ -228,10 +259,10 @@ footer a:hover{text-decoration:underline}
   <div class="section-label">Why RUNLAID</div>
   <h2 class="section-title">Built different.</h2>
   <div class="feature-row">
-    <div class="feat reveal"><span class="feat-icon">&#9889;</span><h3>Auto-Triggers</h3><p>Detects Claude streaming. 5 seconds and the game launches. Zero config required.</p></div>
-    <div class="feat reveal"><span class="feat-icon">&#127922;</span><h3>Random Every Time</h3><p>12 games, all different mechanics. Registry picks randomly with repeat avoidance. Never the same twice in a row.</p></div>
-    <div class="feat reveal"><span class="feat-icon">&#128274;</span><h3>Zero Tracking</h3><p>No network requests. No storage. No analytics. No access to your conversations. Everything runs locally.</p></div>
-    <div class="feat reveal"><span class="feat-icon">&#128736;</span><h3>Open Source</h3><p>GPL v3. Every line of code is public. Contributions welcome. We're building toward 100 games.</p></div>
+    <div class="feat reveal"><span class="feat-icon"><svg><use href="#ico-bolt"/></svg></span><h3>Auto-Triggers</h3><p>Detects Claude streaming. 5 seconds and the game launches. Zero config required.</p></div>
+    <div class="feat reveal"><span class="feat-icon"><svg><use href="#ico-dice"/></svg></span><h3>Random Every Time</h3><p>12 games shipping toward 100. Registry picks randomly with repeat avoidance. Never the same twice in a row.</p></div>
+    <div class="feat reveal"><span class="feat-icon"><svg><use href="#ico-lock"/></svg></span><h3>Zero Tracking</h3><p>No network requests. No storage. No analytics. No access to your conversations. Everything runs locally.</p></div>
+    <div class="feat reveal"><span class="feat-icon"><svg><use href="#ico-code"/></svg></span><h3>Open Source</h3><p>GPL v3. Every line is public. Contributions welcome. Add a game with a single function call.</p></div>
   </div>
 </section>
 
@@ -255,25 +286,17 @@ footer a:hover{text-decoration:underline}
 </footer>
 
 <script>
-// Particles
 (function(){
+  // Particles
   var hero=document.querySelector('.hero');
-  for(var i=0;i<20;i++){
-    var p=document.createElement('div');p.className='particle';
-    var sz=2+Math.random()*4;var colors=['#7C50FF','#D85A30','#4A90D9','#39E07A','#50C8FF'];
-    p.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+(60+Math.random()*40)+'%;background:'+colors[~~(Math.random()*colors.length)]+';animation-duration:'+(8+Math.random()*15)+'s;animation-delay:'+Math.random()*10+'s;';
-    hero.appendChild(p);
-  }
-})();
-// Scroll reveal
-var reveals=document.querySelectorAll('.reveal');
-var observer=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.15});
-reveals.forEach(function(r){observer.observe(r)});
-// Countdown ring animation (12/100 = 12%)
-(function(){
-  var circ=427.3;var pct=12/100;var offset=circ*(1-pct);
-  var rings=document.querySelectorAll('.ring-progress,.ring-glow');
-  setTimeout(function(){rings.forEach(function(r){r.style.strokeDashoffset=offset})},500);
+  for(var i=0;i<20;i++){var p=document.createElement('div');p.className='particle';var sz=2+Math.random()*4;var colors=['#7C50FF','#D85A30','#4A90D9','#39E07A','#50C8FF'];p.style.cssText='width:'+sz+'px;height:'+sz+'px;left:'+Math.random()*100+'%;top:'+(60+Math.random()*40)+'%;background:'+colors[~~(Math.random()*colors.length)]+';animation-duration:'+(8+Math.random()*15)+'s;animation-delay:'+Math.random()*10+'s;';hero.appendChild(p)}
+  // Reveal
+  var reveals=document.querySelectorAll('.reveal');
+  var obs=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting)x.target.classList.add('visible')})},{threshold:.15});
+  reveals.forEach(function(r){obs.observe(r)});
+  // Countdown ring animate
+  var circ=427.3;var pct=12/100;var off=circ*(1-pct);
+  setTimeout(function(){document.querySelector('.ring-progress').style.strokeDashoffset=off;document.querySelector('.ring-glow').style.strokeDashoffset=off},400);
 })();
 </script>
 </body>
