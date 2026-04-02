@@ -1,8 +1,13 @@
 {
   "manifest_version": 3,
   "name": "RUNLAID.exe",
-  "version": "1.0.0",
-  "description": "A satirical mini-game that auto-plays while Claude works. Zero config.",
+  "version": "3.0.0",
+  "description": "100 satirical mini-games that auto-play while Claude works. Different game every time.",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
   "content_scripts": [
     {
       "matches": ["https://claude.ai/*"],
